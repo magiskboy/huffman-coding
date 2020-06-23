@@ -1,4 +1,10 @@
 # Prerequisites
+
+venv
+
+*.txt
+*.json
+
 *.d
 
 .ccls

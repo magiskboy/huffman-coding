@@ -38,6 +38,4 @@ void build_code_word(std::vector<WORD_T>& data, std::map<WORD_T, void*> code_wor
     }
     std::pop_heap(heap.begin(), heap.end()); heap.pop_back();
     Node root = heap.front();
-
-    // build code word
 }
