@@ -1,28 +1,28 @@
-import sys
-import json
 from pprint import pprint
 import huffman
+from view import viz_tree
 
 
-help_str = '''
-Usage: example.py <action> <file>
-  Options:
-    decode              Decode binary string present to origin text
-    encode              Build code word and encode data from file
-  Huffman coding implementation
-'''
+data = 'this is an example of a huffman tree'
+
+tree = huffman.build_tree(data)
+map_code = huffman.build_map_code(tree)
 
 
-if __name__ == '__main__':
-    argv = sys.argv[1:]
-    if len(argv) < 2:
-        print(help_str)
-    else:
-        if argv[0] == 'encode':
-            map_code, enc = huffman.encode(argv[1])
-            print('Map code')
-            pprint(map_code, width=1)
-            print('Encoded')
-            print(enc)
-        else:
-            print(help_str)
+# encode
+bin_data = huffman.encode(data, map_code)
+
+print('Map code')
+pprint(map_code, width=1)
+print('Encoded data')
+print(bin_data)
+viz_tree(tree)
+
+# decode
+print('After decode')
+print(huffman.decode(bin_data, map_code))
+
+
+# calculate performance
+p = (len(bin_data.tobytes()) * 8) / (len(data) * 8)
+print(f'Reduce {p * 100}%')

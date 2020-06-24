@@ -4,6 +4,7 @@ venv
 
 *.txt
 *.json
+*.gv*
 
 *.d
 

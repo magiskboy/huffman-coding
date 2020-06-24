@@ -16,37 +16,28 @@ class Node:
         return self.key <= o.key
 
 
-def build_map_code(tree: Node, code, map_code: dict):
+def build_map_code(tree: Node, code=''):
     if not (tree.left and tree.right):
-        map_code[tree.val] = bitarray(code)
+        return {
+            tree.val: bitarray(code)
+        }
     else:
+        ret = {}
         if tree.left:
-            build_map_code(tree.left, code + '0', map_code)
+            ret.update(build_map_code(tree.left, code + '0'))
         if tree.right:
-            build_map_code(tree.right, code + '1', map_code)
+            ret.update(build_map_code(tree.right, code + '1'))
+        return ret
 
 
-def decode(map_code, data):
-    out = []
-    token = ''
-    inv_map = {v: k for k, v in map_code.items()}
-    for char in data:
-        token += char
-        if token in inv_map:
-            out.append(inv_map[token])
-            token = ''
-    return ''.join(out)
-
-
-def encode(data):
+def build_tree(data):
     counter = Counter(data)
     heap = []
-    n = len(counter.keys())
     for value, f in counter.items():
-        heap.append(Node(f / n, value, None, None))
+        heap.append(Node(f, value, None, None))
 
-    if n == 1:
-        map_code = {heap[0].val: bitarray('0')}
+    if len(data) == 1:
+        return heap[0]
     else:
         heapq.heapify(heap)
         while len(heap) > 1:
@@ -54,12 +45,16 @@ def encode(data):
             right = heapq.heappop(heap)
             c = Node(left.key + right.key, None, left=left, right=right)
             heapq.heappush(heap, c)
-        heap = heapq.heappop(heap)
-        map_code = {}
-        build_map_code(heap, '', map_code)
-    print(map_code)
+        tree = heapq.heappop(heap)
+    return tree
 
-    enc = bitarray()
-    enc.encode(map_code, data)
 
-    return map_code, enc
+def encode(data, map_code):
+    out = bitarray()
+    out.encode(map_code, data)
+    return out
+
+
+def decode(data, map_code):
+    out = data.decode(map_code)
+    return ''.join(out)

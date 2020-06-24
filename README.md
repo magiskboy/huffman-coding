@@ -1,2 +1,7 @@
 # huffman-coding
-Huffman coding implement
+Huffman coding implementation
+
+
+```bash
+python example.py
+```
