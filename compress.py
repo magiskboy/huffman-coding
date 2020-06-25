@@ -7,7 +7,11 @@ import huffman
 
 
 help_str = '''
-
+Usage: compress.py <action> <filein> <fileout>
+  Options:
+    decode              Decode binary string present to origin text
+    encode              Build code word and encode data from file
+  Huffman coding implementation
 '''
 
 
