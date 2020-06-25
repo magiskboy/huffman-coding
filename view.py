@@ -8,7 +8,7 @@ def node_render(node, g):
     label = str(node.key)
     name = str(id(node))
     if node.val:
-        g.node(name, nohtml(f'<f0> {label}|<f1> {node.val}'), shape='record')
+        g.node(name, nohtml(f'<f0> {label}|<f1> {chr(node.val)}'), shape='record')
     else:
         g.node(name, nohtml(label))
     if node.left:

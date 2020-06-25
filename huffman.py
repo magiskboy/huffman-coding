@@ -30,22 +30,24 @@ def build_map_code(tree: Node, code=''):
         return ret
 
 
-def build_tree(data):
+def freq_str(data):
     counter = Counter(data)
+    return counter
+
+
+def build_tree(data):
+    fr = freq_str(data)
     heap = []
-    for value, f in counter.items():
+    for value, f in fr.items():
         heap.append(Node(f, value, None, None))
 
-    if len(data) == 1:
-        return heap[0]
-    else:
-        heapq.heapify(heap)
-        while len(heap) > 1:
-            left = heapq.heappop(heap)
-            right = heapq.heappop(heap)
-            c = Node(left.key + right.key, None, left=left, right=right)
-            heapq.heappush(heap, c)
-        tree = heapq.heappop(heap)
+    heapq.heapify(heap)
+    while len(heap) > 1:
+        left = heapq.heappop(heap)
+        right = heapq.heappop(heap)
+        c = Node(left.key + right.key, None, left=left, right=right)
+        heapq.heappush(heap, c)
+    tree = heapq.heappop(heap)
     return tree
 
 
@@ -55,6 +57,12 @@ def encode(data, map_code):
     return out
 
 
-def decode(data, map_code):
-    out = data.decode(map_code)
-    return ''.join(out)
+def decode(data, map_code, u_bit=None):
+    _data = bitarray()
+    _data.frombytes(data)
+    if u_bit is not None: del _data[-u_bit:]
+    out = _data.decode(map_code)
+    try:
+        return bytes(out)
+    except:
+        return b''.join(out)

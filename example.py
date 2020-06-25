@@ -3,7 +3,7 @@ import huffman
 from view import viz_tree
 
 
-data = 'this is an example of a huffman tree'
+data = b'this is an example of a huffman tree'
 
 tree = huffman.build_tree(data)
 map_code = huffman.build_map_code(tree)
@@ -20,9 +20,9 @@ viz_tree(tree)
 
 # decode
 print('After decode')
-print(huffman.decode(bin_data, map_code))
+print(huffman.decode(bin_data.tobytes(), map_code, bin_data.buffer_info()[3]))
 
 
 # calculate performance
-p = (len(bin_data.tobytes()) * 8) / (len(data) * 8)
+p = len(bin_data) / (len(data) * 8)
 print(f'Reduce {p * 100}%')
