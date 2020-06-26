@@ -76,7 +76,7 @@ def encode(data, map_code):
 def decode(data, map_code, u_bit=None):
     _data = bitarray()
     _data.frombytes(data)
-    if u_bit is not None: del _data[-u_bit:]
+    if u_bit: del _data[-u_bit:]
     out = _data.decode(map_code)
     try:
         return bytes(out)

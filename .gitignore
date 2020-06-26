@@ -1,6 +1,7 @@
 # Prerequisites
 
 venv
+*.png
 
 *.txt
 *.json
