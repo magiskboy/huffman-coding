@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import time
 import sys
 import pickle
 from bitarray import bitarray
@@ -14,6 +15,14 @@ Usage: compress.py <action> <filein> <fileout>
   Huffman coding implementation
 '''
 
+def time_counter(f):
+    def decorator(*args, **kwargs):
+        a = time.time()
+        ret = f(*args, **kwargs)
+        print(f'{f.__name__}: {time.time()-a}')
+        return ret
+    return decorator
+
 
 def read_each(fi, n=1):
     chunk = 1
@@ -24,11 +33,11 @@ def read_each(fi, n=1):
 
 def encode(filename_in, filename_out):
     with open(filename_in, 'rb') as fi:
-        freq = huffman.freq_str(read_each(fi))
-        tree = huffman.build_tree(freq)
-        map_code = huffman.build_map_code(tree)
+        freq = time_counter(huffman.counter)(read_each(fi))
+        tree = time_counter(huffman.build_tree)(freq)
+        map_code = time_counter(huffman.build_map_code)(tree, '')
         fi.seek(0)
-        out = huffman.encode(read_each(fi), map_code)
+        out = time_counter(huffman.encode)(read_each(fi), map_code)
         u = out.buffer_info()[3]            # unused bits of last byte
         header = pickle.dumps(freq, pickle.HIGHEST_PROTOCOL)
         n_header = len(header)

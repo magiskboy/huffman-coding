@@ -3,16 +3,27 @@
 import heapq
 from collections import Counter
 from bitarray import bitarray
+from libcpp.map cimport map as cpp_map
+from cython.operator cimport dereference
+from cython.operator cimport preincrement
+cdef extern from "<algorithm>" namespace "std":
+    Iter find[Iter](Iter first, Iter last)
+from queue import LifoQueue
 
 
-class Node:
-    def __init__(self, key, val, left, right):
+cdef class Node:
+    cdef int key
+    cdef bytes val
+    cdef Node left
+    cdef Node right
+
+    def __init__(self, int key, bytes val, Node left, Node right):
         self.key = key
         self.val = val
         self.left = left
         self.right = right
 
-    def __lt__(self, o):
+    def __lt__(self, Node o):
         return self.key <= o.key
 
 
@@ -30,18 +41,23 @@ def build_map_code(tree: Node, code=''):
         return ret
 
 
-def freq_str(data):
-    counter = Counter(data)
-    return counter
+def counter(data):
+    cdef cpp_map[char*, int] c;
+    cdef char* ch
+    for ch in data:
+        preincrement(c[ch])
+    return c
 
 
-def build_tree(data):
-    fr = freq_str(data)
+def build_tree(cpp_map[char*, int] freq):
     heap = []
-    for value, f in fr.items():
-        heap.append(Node(f, value, None, None))
+    cdef cpp_map[char*, int].iterator it = freq.begin()
+    while (it != freq.end()):
+        heap.append(Node(dereference(it).second, dereference(it).first, None, None))
+        preincrement(it)
 
     heapq.heapify(heap)
+    cdef Node left, right, c
     while len(heap) > 1:
         left = heapq.heappop(heap)
         right = heapq.heappop(heap)
