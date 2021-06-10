@@ -3,7 +3,7 @@ from pprint import pprint
 import huffman
 from view import viz_tree
 
-data = b"this is an example of a huffman tree"
+data = b"huffman"
 
 tree = huffman.build_tree(data)
 map_code = huffman.build_map_code(tree)

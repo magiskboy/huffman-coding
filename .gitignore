@@ -2,7 +2,6 @@
 
 venv
 
-*.txt
 *.json
 *.gv*
 
