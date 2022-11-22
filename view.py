@@ -2,8 +2,6 @@
 
 from graphviz import Digraph, nohtml
 
-
-
 def node_render(node, g):
     label = str(node.key)
     name = str(id(node))

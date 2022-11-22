@@ -16,6 +16,10 @@ class Node:
         return self.key <= o.key
 
 
+def freq_str(data):
+    counter = Counter(data)
+    return counter
+
 def build_map_code(tree: Node, code=''):
     if not (tree.left and tree.right):
         return {
@@ -28,12 +32,6 @@ def build_map_code(tree: Node, code=''):
         if tree.right:
             ret.update(build_map_code(tree.right, code + '1'))
         return ret
-
-
-def freq_str(data):
-    counter = Counter(data)
-    return counter
-
 
 def build_tree(data):
     fr = freq_str(data)
@@ -57,12 +55,28 @@ def encode(data, map_code):
     return out
 
 
-def decode(data, map_code, u_bit=None):
+def decode(data, tree, u_bit=None):
     _data = bitarray()
     _data.frombytes(data)
     if u_bit is not None: del _data[-u_bit:]
-    out = _data.decode(map_code)
-    try:
-        return bytes(out)
-    except:
-        return b''.join(out)
+    
+    out = ''
+    p = tree
+    for bit in _data:
+        # leaf node
+        if p.left == p.right == None:
+            out = out + chr(p.val)
+            if bit:
+                p = tree.right
+            else:
+                p = tree.left
+            continue
+
+        if bit:
+            p = p.right
+        else:
+            p = p.left
+
+    out = out + chr(p.val)
+
+    return out

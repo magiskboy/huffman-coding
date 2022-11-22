@@ -45,8 +45,7 @@ def decode(filename_in, filename_out):
         data = fi.read()
         freq = pickle.loads(header)
         tree = huffman.build_tree(freq)
-        map_code = huffman.build_map_code(tree)
-        out = huffman.decode(data, map_code, u)
+        out = huffman.decode(data, tree, u)
         with open(filename_out, 'wb') as fo:
             fo.write(out)
 
