@@ -4,7 +4,6 @@ import heapq
 from collections import Counter
 from bitarray import bitarray
 
-
 class Node:
     def __init__(self, key, val, left, right):
         self.key = key
@@ -17,21 +16,20 @@ class Node:
 
 
 def freq_str(data):
-    counter = Counter(data)
-    return counter
+    return Counter(data)
 
-def build_map_code(tree: Node, code=''):
+def build_map_code(tree: Node, code = ''):
     if not (tree.left and tree.right):
         return {
             tree.val: bitarray(code)
         }
-    else:
-        ret = {}
-        if tree.left:
-            ret.update(build_map_code(tree.left, code + '0'))
-        if tree.right:
-            ret.update(build_map_code(tree.right, code + '1'))
-        return ret
+
+    ret = {}
+    if tree.left:
+        ret.update(build_map_code(tree.left, code + '0'))
+    if tree.right:
+        ret.update(build_map_code(tree.right, code + '1'))
+    return ret
 
 def build_tree(data):
     fr = freq_str(data)
@@ -60,12 +58,12 @@ def decode(data, tree, u_bit=None):
     _data.frombytes(data)
     if u_bit is not None: del _data[-u_bit:]
     
-    out = ''
     p = tree
+    buf = []
     for bit in _data:
         # leaf node
         if p.left == p.right == None:
-            out = out + chr(p.val)
+            buf.append(p.val)
             if bit:
                 p = tree.right
             else:
@@ -77,6 +75,6 @@ def decode(data, tree, u_bit=None):
         else:
             p = p.left
 
-    out = out + chr(p.val)
+    buf.append(p.val)
 
-    return out
+    return bytes(buf)
